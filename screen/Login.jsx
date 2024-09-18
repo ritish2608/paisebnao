@@ -61,7 +61,8 @@ const Login = () => {
       const response = await loginUser(email, password);
      
       AsyncStorage.setItem('access_token', response?.access_token);
-      if (AsyncStorage.getItem('access_token')) {
+      const token = AsyncStorage.getItem('access_token');
+      if (token!=null) {
         navigation.navigate('Dashboard');
       } else {
         throw new Error('Access token is not defined');

@@ -7,6 +7,7 @@ const landingStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
+    height:30,
   },
   displayContent: {
     // In React Native, there's no direct equivalent for 'display: contents'

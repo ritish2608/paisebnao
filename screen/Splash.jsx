@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import paisebnaologo from '../assets/images/paisebnaologo.png'; // Logo Image
+ // Logo Image
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import paisebnaologo from '../assets/images/paisebnaologo_1.png';
+import group_1 from '../assets/images/group_1.png';
 
 const Splash = ({ navigation }) => {
 
@@ -11,10 +13,10 @@ const Splash = ({ navigation }) => {
        const token =  AsyncStorage.getItem('access_token');
        console.log('your token recived is :: ',token);
        if (token !== null) {
-          navigation.replace('Landing'); 
+          navigation.replace('Landing');
        // navigation.navigate('Dashboard');
       }else{
-      navigation.replace('Landing'); 
+      navigation.replace('Landing');
       }
  // Navigate to Home screen
     }, 3000);  // 3 seconds delay
@@ -22,9 +24,12 @@ const Splash = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-    <Image style={styles.text}
+    {/* <Image style={styles.text}
         source={require('../assets/images/paisebnaologo_1.png')}
-      />
+      /> */}
+         <Image  tyle={styles.text} source={paisebnaologo}/>
+
+       <Image source={group_1}  style={{marginTop:20}}/>
     </View>
   );
 };
@@ -34,12 +39,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100,
+    height: 40,
+  
   },
   text: {
     fontSize: 24,
     fontWeight: 'bold',
   },
+
 });
 
 export default Splash;

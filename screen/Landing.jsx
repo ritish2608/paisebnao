@@ -8,7 +8,7 @@ import group_1 from '../assets/images/group_1.png';
 const Landing = () => {
       const navigation = useNavigation();
       const handelButton = () => {
-     navigation.navigate('Register');
+     navigation.navigate('Registration');
   };
 
     const loginButton = () => {

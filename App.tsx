@@ -25,8 +25,9 @@ import RootNavigator from './screen/RootNavigator';
 import Profile from './screen/Profile';
 import ReferAndEarn from './screen/ReferAndEarn';
 import PlatformFees from './screen/PlatformFees';
-import Dashboard1 from './screen/dash_board';
+
 import Dashboard2 from './screen/dash_board';
+import Registration from './screen/Registration';
 
 const App = () => {
  // const Drawer = createDrawerNavigator();
@@ -48,6 +49,8 @@ const App = () => {
          <Stack.Screen name="ReferAndEarn" component={ReferAndEarn} />
                   <Stack.Screen name="PlatformFees" component={PlatformFees} />
                   <Stack.Screen name="Dashboard2" component={Dashboard2} />
+                   <Stack.Screen name="Registration" component={Registration} />
+                  
 
       </Stack.Navigator>
     </NavigationContainer>

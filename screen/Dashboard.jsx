@@ -149,7 +149,7 @@ const partners = [
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
         }
-    }, []);
+    }, [dashboardApi]);
  const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);

@@ -21,7 +21,7 @@ const getToken = async () => {
   }
 };
 
-// Function to register a user
+
 export const registerUser = async (userData) => {
   try {
     const response = await api.post('/user/registration/', userData);
