@@ -26,8 +26,11 @@ import Profile from './screen/Profile';
 import ReferAndEarn from './screen/ReferAndEarn';
 import PlatformFees from './screen/PlatformFees';
 
-import Dashboard2 from './screen/dash_board';
+
 import Registration from './screen/Registration';
+import VideoPlayer from './screen/VideoPlayer';
+import WithdrawAmount from './screen/WithdrawAmount';
+import Dashboard2 from './screen/dash_board';
 
 const App = () => {
  // const Drawer = createDrawerNavigator();
@@ -50,7 +53,8 @@ const App = () => {
                   <Stack.Screen name="PlatformFees" component={PlatformFees} />
                   <Stack.Screen name="Dashboard2" component={Dashboard2} />
                    <Stack.Screen name="Registration" component={Registration} />
-                  
+                           <Stack.Screen name="VideoPlayer" component={VideoPlayer}/>
+                           <Stack.Screen name="WithdrawAmount" component={WithdrawAmount}/>
 
       </Stack.Navigator>
     </NavigationContainer>

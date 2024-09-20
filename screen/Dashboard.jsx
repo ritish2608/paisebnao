@@ -65,9 +65,12 @@ const navigation = useNavigation();
   const handleAmountWithdrawal = () => {
     // Handle withdrawal
      if (pointsEarned < 500) {
-            setWithdrawalPopupVisible(true);
+           setWithdrawalPopupVisible(true);
+              // navigation.navigate('WithdrawAmount');
         } else {
-            navigation.navigate(`/amount-withdraw?balance=${pointsEarned}`);
+          
+           navigation.navigate('WithdrawAmount');
+         //   navigation.navigate(`/amount-withdraw?balance=${pointsEarned}`);
         }
   };
   const handlePlayButtonClick = () => {
@@ -223,15 +226,15 @@ const partners = [
       <View style={styles.topButtons}>
         <TouchableOpacity onPress={handleRedirect} style={styles.topButton}>
           <Image source={userIcon} style={styles.icon} />
-          <Text>Hi, {name}</Text>
+          <Text style={ {color: '#ffffff',fontSize:15}}>Hi, {name}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleRefernearn} style={styles.topButton}>
           <Image source={referIcon} style={styles.icon} />
-          <Text>Refer & Earn</Text>
+          <Text style={ {color: '#ffffff',fontSize:15}}>Refer & Earn</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleDeposit} style={styles.topButton}>
           <Image source={depositIcon} style={styles.icon} />
-          <Text>Deposit</Text>
+          <Text style={ {color: '#ffffff',fontSize:15}}>Deposit</Text>
         </TouchableOpacity>
       </View>
 
@@ -366,7 +369,7 @@ flex: 1, // Ensures the component takes up all available space
           {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
           <View style={[styles.videoPlayerWrapper, isLoading && styles.hidden]}>
             <Video
-              source={{ uri: dashboardData[currentVideoIndex]?.redirection_link }}
+              source={{ uri: dashboardData[currentVideoIndex]?.video_id }}
               paused={!isPlaying}
               controls={false}
               onProgress={handleProgress}
@@ -376,7 +379,7 @@ flex: 1, // Ensures the component takes up all available space
           </View>
         </View>
         <View>
-           <YoutubePlayer style={styles.videoSection}
+           {/* <YoutubePlayer style={styles.videoSection}
   ref={this.playerRef}
   height={300}
   width={400}
@@ -391,7 +394,7 @@ flex: 1, // Ensures the component takes up all available space
     cc_lang_pref: 'us',
     showClosedCaptions: true,
   }}
-/>
+/> */}
         </View>
         <TouchableOpacity onPress={handlePlayButtonClick} style={styles.playButton}>
           <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
