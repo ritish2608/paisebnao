@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { View, Text, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import styles from '../styling/loginStyle';
 import paisebnaologo from '../assets/images/paisebnaologo_1.png';
 import group_1 from '../assets/images/group_1.png';
@@ -14,8 +21,7 @@ import './Router/Routes';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { loginUser } from './api';
-  import { BackHandler } from "react-native";
+import {loginUser} from './api';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -23,23 +29,21 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [loginError, setLoginError] = useState('');
-
-
   const navigation = useNavigation();
 
-  const validateEmail = (email) => {
+  const validateEmail = email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
   const handleSubmit = () => {
     //ForgetPassword
-   navigation.navigate('OopsScreen');
+    navigation.navigate('OopsScreen');
   };
-    const handelForgetPAssword = () => {
-   navigation.navigate('VerifyAccount');
+  const handelForgetPAssword = () => {
+    navigation.navigate('VerifyAccount');
   };
 
-  const handleEmailChange = (value) => {
+  const handleEmailChange = value => {
     if (value.length > 154) {
       setEmailError('Email must be 154 characters or less.');
     } else {
@@ -62,13 +66,15 @@ const Login = () => {
       AsyncStorage.setItem('access_token', response?.access_token);
       const token = AsyncStorage.getItem('access_token');
       if (token != null) {
-        navigation.navigate('Dashboard');
+        navigation.navigate('Home');
       } else {
         throw new Error('Access token is not defined');
       }
     } catch (error) {
       console.error('Login failed:', error);
-      setLoginError('Invalid credentials. Please enter the correct email and password.');
+      setLoginError(
+        'Invalid credentials. Please enter the correct email and password.',
+      );
     }
   };
 
@@ -77,9 +83,9 @@ const Login = () => {
       <View style={styles.logoContainer}>
         <Image source={paisebnaologo} style={styles.logo} />
 
-       <Image source={group_1}  style={{marginTop:20}}/>
+        <Image source={group_1} style={{marginTop: 20}} />
 
-        <View style={styles.inputWrapper} >
+        <View style={styles.inputWrapper}>
           <Image source={emailicon} style={styles.icon} />
           <TextInput
             style={styles.inputField}
@@ -91,7 +97,9 @@ const Login = () => {
             textContentType="emailAddress"
           />
         </View>
-        {emailError ? <Text style={styles.errorMessage}>{emailError}</Text> : null}
+        {emailError ? (
+          <Text style={styles.errorMessage}>{emailError}</Text>
+        ) : null}
 
         <View style={styles.inputWrapper}>
           <Image source={lock} style={styles.icon} />
@@ -104,16 +112,20 @@ const Login = () => {
             maxLength={4}
           />
           <TouchableOpacity onPress={toggleVisibility}>
-            <Image source={passwordVisible ? eyeon : eyeoff} style={styles.visibilityIcon} />
+            <Image
+              source={passwordVisible ? eyeon : eyeoff}
+              style={styles.visibilityIcon}
+            />
           </TouchableOpacity>
         </View>
 
-        {loginError ? <Text style={styles.errorMessage}>{loginError}</Text> : null}
+        {loginError ? (
+          <Text style={styles.errorMessage}>{loginError}</Text>
+        ) : null}
 
         <Text style={styles.termsText}>
           By going forward, you agree to{' '}
-          <Text style={styles.linkText}
-           onPress={handleSubmit}>
+          <Text style={styles.linkText} onPress={handleSubmit}>
             Terms & Conditions
           </Text>
         </Text>
@@ -129,7 +141,5 @@ const Login = () => {
     </Container>
   );
 };
-
-
 
 export default Login;

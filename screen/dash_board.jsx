@@ -1,200 +1,467 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Button, Image, ScrollView, Alert, StyleSheet } from 'react-native';
-import Slider from 'react-native-slick';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
 
-import { dashboardApi ,addReward, fetchUserDetail } from './api';
-import partnerImage from '../assets/images/partner.png';
-import tresery from "../assets/images/chestmoney.png";
+import userIcon from '../assets/images/user.png';
+import referIcon from '../assets/images/rupee.png';
+import depositIcon from '../assets/images/deposit.png';
+import viewsIcon from '../assets/images/supereye.png';
+import errorIcon from '../assets/images/error.png';
+import styles from './../styling/dashboardStyling';
 import paisebnaotext from '../assets/images/paisebnaotext.png';
-import YouTubePlayer from 'react-player/youtube';
+import tresery from '.././assets/images/chestmoney.png';
+import earncash from '../assets/images/newCash.png';
+import earcchest from '../assets/images/earnChest.png';
+import {useNavigation} from '@react-navigation/native';
+import {addReward, dashboardApi, fetchUserdetail} from './api';
+
+import YoutubeIframe from 'react-native-youtube-iframe';
+import Video from 'react-native-video';
 
 const Dashboard2 = () => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [popupVisible, setPopupVisible] = useState(false);
-    const [dashboardData, setDashboardData] = useState([]);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [pointsEarned, setPointsEarned] = useState(0);
-    const [name, setName] = useState("User");
-    const [totalViews, setTotalViews] = useState(10);
-    const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-    const [rewardAdded, setRewardAdded] = useState(false);
-    const [videoCompleted, setVideoCompleted] = useState(false);
-    const navigation = useNavigation();
+  const [videos, setVideos] = useState([]);
 
-    ////
+  const [timer, setTimer] = useState(15); // Initial timer is 15 seconds
 
-    const fetchDashboardData = useCallback(async () => {
-        try {
-            const response = await dashboardApi();
-            console.log(response.data, 'Dashboard API response');
+  const [isVisible, setIsVisible] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [withdrawalPopupVisible, setWithdrawalPopupVisible] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [played, setPlayed] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalViews, setTotalViews] = useState(0); // Example state
+  const [pointsEarned, setPointsEarned] = useState(0); // Example state
+  const [dashboardData, setDashboardData] = useState([]); // Example state
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
-            if (response.data && Array.isArray(response.data)) {
-                setDashboardData(response.data);
-                console.log('Video id is :: ',response.data[currentVideoIndex]?.video_id);
-            } else {
-                console.error('Invalid data format received from dashboard API');
-            }
-        } catch (error) {
-            console.error('Error fetching dashboard data:', error);
-        }
-    }, [dashboardApi]);
+  const [rewardAdded, setRewardAdded] = useState(false);
+  const [videoCompleted, setVideoCompleted] = useState(false);
+  const [referralId, setReferralId] = useState(null);
+  const [referralCount, setReferralCount] = useState(0);
+  const [name, setName] = useState('User');
 
-    const fetchUserDetails = async () => {
-        try {
-            const data = await fetchUserDetail();
-            setName(data?.data?.first_name || "User");
-            setPointsEarned(data?.data?.points || 0);
-            setTotalViews(data?.data?.views || 0);
-        } catch (error) {
-            console.error('Error fetching user details:', error);
-        }
-    };
-
-    const handlePlayButtonClick = () => {
-        setIsPlaying(prev => !prev);
-    };
-
-    const handleAddReward = async (id) => {
-        try {
-            await addReward(id);
-            setRewardAdded(true);
-        } catch (error) {
-            console.error('Error adding reward:', error);
-        }
-    };
-
-    const handleProgress = (state) => {
-        const videoDuration = dashboardData[currentVideoIndex]?.timer || 0;
-        if (state.playedSeconds >= videoDuration && !videoCompleted) {
-            setIsPlaying(false);
-            setVideoCompleted(true);
-            setTimeout(() => {
-                setPopupVisible(true);
-                handleAddReward(dashboardData[currentVideoIndex]?.id);
-                setTimeout(() => {
-                    setPopupVisible(false);
-                    handleNextVideo();
-                }, 3000);
-            }, 1000);
-        }
-    };
-
-    const handleNextVideo = () => {
-        if (currentVideoIndex < dashboardData.length - 1) {
-            setCurrentVideoIndex(currentVideoIndex + 1);
-            setIsPlaying(true);
-        } else {
-            setIsPlaying(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchDashboardData();
-        fetchUserDetails();
-    }, [fetchDashboardData]);
-
-    return (
-        <ScrollView style={styles.container}>
-            {isVisible && (
-                <View style={styles.popup}>
-                    <Text>Payment Failed</Text>
-                    <Button title="Retry" onPress={() => Alert.alert('Retrying payment...')} />
-                </View>
-            )}
-
-            {popupVisible && (
-                <View style={styles.popup}>
-                    <Image source={tresery} style={styles.popupImage} />
-                    <Text>Congratulations!!</Text>
-                    <Text>You Earned ₹{dashboardData[currentVideoIndex]?.points}</Text>
-                </View>
-            )}
-
-            <View style={styles.topButtons}>
-                <Button title={`Hi, ${name}`} onPress={() => navigation.navigate('Profile')} />
-                <Button title="Refer & Earn" onPress={() => navigation.navigate('ReferAndEarn')} />
-                <Button title="Deposit" onPress={() => navigation.navigate('PlatformFee')} />
-            </View>
-
-            <View style={styles.accountInfo}>
-                <Text>Welcome to </Text>
-                <Image source={paisebnaotext} style={styles.logo} />
-                <Text> App watch & Earn</Text>
-                <Text>{totalViews} Views</Text>
-                <Text>{pointsEarned}</Text>
-                <Button title="Withdraw" onPress={() => Alert.alert('Withdraw')} />
-            </View>
-
-            <View style={styles.videoSection}>
-                <Text>View this video and get ₹{dashboardData[currentVideoIndex]?.points}</Text>
-                 <YouTubePlayer
-                // source={{ uri: dashboardData[currentVideoIndex]?.video_id }}
-                    url={{ uri: dashboardData[currentVideoIndex]?.video_id }}
-                    playing={isPlaying}
-                    controls={false}
-                    onProgress={handleProgress}
-                    width="100%"
-                    height="100%"
-                />
-                <Button title={isPlaying ? 'Pause' : 'Play'} onPress={handlePlayButtonClick} />
-            </View>
-
-            <View style={styles.partnersSection}>
-                <Text>Our Partners</Text>
-                <Slider>
-                    {dashboardData.map((partner, index) => (
-                        <Image key={index} source={partnerImage} style={styles.partnerImage} />
-                    ))}
-                </Slider>
-            </View>
-        </ScrollView>
+  const navigation = useNavigation();
+  const handleClose = () => setIsVisible(false);
+  const handleRetry = () => {
+    // Retry logic here
+  };
+  const handleRedirect = () => {
+    // Handle redirection
+    navigation.navigate('Profile');
+  };
+  const handleRefernearn = () => {
+    // Handle refer & earn
+    // navigation.navigate(`/referandearn?points-earned=${formatCurrency(pointsEarned)}&referralId=${referralId}&referralCount=${referralCount}`);
+    navigation.navigate(
+      'ReferAndEarn',
+      referralId,
+      referralCount,
+      pointsEarned,
     );
-};
+  };
+  const handleDeposit = () => {
+    navigation.navigate('PlatformFees');
+  };
+  const handleAmountWithdrawal = () => {
+    // Handle withdrawal
+    if (pointsEarned < 500) {
+      setWithdrawalPopupVisible(true);
+      // navigation.navigate('WithdrawAmount');
+    } else {
+      navigation.navigate('WithdrawAmount');
+      //   navigation.navigate(`/amount-withdraw?balance=${pointsEarned}`);
+    }
+  };
+  const handlePlayButtonClick = () => {
+    setIsPlaying(!isPlaying);
+    // if (currentVideoIndex < dashboardData?.length - 1) {
+    //   setIsPlaying(prevIsPlaying => !prevIsPlaying);
+    // }
+  };
+  const handleProgress = state => {
+    const videoDuration = dashboardData[currentVideoIndex]?.timer || 0;
+    const playedRatio = state.playedSeconds / videoDuration;
+    setPlayed(playedRatio);
+    setCurrentTime(state.playedSeconds);
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    popup: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    popupImage: {
-        width: 200,
-        height: 200,
-    },
-    topButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-    },
-    accountInfo: {
-        marginBottom: 20,
-    },
-    logo: {
-        width: 100,
-        height: 30,
-        marginVertical: 10,
-    },
-    videoSection: {
-        marginBottom: 20,
-    },
-    partnersSection: {
-        marginBottom: 20,
-    },
-    partnerImage: {
-        width: '100%',
-        height: 150,
-    },
-});
+    if (state.playedSeconds >= videoDuration && !videoCompleted) {
+      setIsPlaying(false);
+      setVideoCompleted(true);
+
+      // Step 1: Display the popup after a delay
+      setTimeout(() => {
+        setPopupVisible(true);
+
+        // Step 2: Add the reward if not added already
+        if (!rewardAdded) {
+          handleAddReward(dashboardData[currentVideoIndex]?.id);
+          setRewardAdded(true);
+        }
+        const handleAddReward = async id => {
+          try {
+            const data = await addReward(id);
+            console.log(data, 'add reward');
+            setRewardAdded(true);
+          } catch (error) {
+            console.error('Error adding reward:', error);
+          }
+        };
+        // Step 3: Hide the popup and move to the next video after another delay
+        setTimeout(() => {
+          setPopupVisible(false);
+          handleNextVideo();
+        }, 3000); // Adjust the timeout duration as needed
+      }, 1000); // Initial delay before showing the popup
+    }
+  };
+
+  const handleNextVideo = () => {
+    handlefetchUserdetail();
+    if (currentVideoIndex < dashboardData.length - 1) {
+      setCurrentVideoIndex(currentVideoIndex + 1);
+      setIsPlaying(true);
+    } else {
+      // If it was the last video, do nothing or handle end of playlist logic
+      setIsPlaying(false);
+    }
+  };
+
+  const handleVideoReady = () => {
+    setIsLoading(false);
+  };
+
+  const fetchDashboardData = useCallback(async () => {
+    try {
+      const response = await dashboardApi();
+      console.log(response.data, 'Dashboard API response');
+
+      if (response.data && Array.isArray(response.data)) {
+        setDashboardData(response.data);
+        console.log(
+          'Video id is :: ',
+          response.data[currentVideoIndex]?.video_id,
+        );
+      } else {
+        console.error('Invalid data format received from dashboard API');
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    }
+    dashboardApi();
+  }, []);
+  const formatTime = seconds => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
+  const handlefetchUserdetail = async () => {
+    try {
+      const data = await fetchUserdetail();
+      console.log('RESPONCE ::: ' + data);
+      setReferralCount(data?.data?.referral_count);
+      setReferralId(data?.data?.referral_id);
+      setName(data?.data?.first_name);
+      setPointsEarned(data?.data?.points);
+      setTotalViews(data?.data?.views);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+    handlefetchUserdetail();
+  }, [fetchDashboardData]);
+
+  useEffect(() => {
+    const checkDataAndRefresh = () => {
+      if (dashboardData.length > 0) {
+        if (currentVideoIndex < dashboardData.length) {
+          const currentLink =
+            dashboardData[currentVideoIndex]?.redirection_link;
+          console.error('Invalid video link, refreshing the page');
+          if (!currentLink) {
+            console.log(
+              'DATAB ',
+              dashboardData[currentVideoIndex]?.redirection_link,
+            );
+            window.location.reload(); // Refresh the page if the link is invalid
+          } else {
+            setIsPlaying(true);
+            setRewardAdded(false);
+            setVideoCompleted(false);
+          }
+        }
+      } else {
+        console.error('Dashboard data is empty, refreshing the page');
+        window.location.reload(); // Refresh the page if the data is empty
+      }
+    };
+
+    // Check data after a short delay to avoid continuous refreshing
+    const delay = setTimeout(checkDataAndRefresh, 2000); // 2 seconds delay
+
+    // Cleanup timeout on component unmount
+    return () => clearTimeout(delay);
+  }, [dashboardData, currentVideoIndex]);
+
+  useEffect(() => {
+    setVideoCompleted(false);
+    setRewardAdded(false);
+  }, [currentVideoIndex]);
+
+  const formatCurrency = amount => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.topButtons}>
+          <TouchableOpacity onPress={handleRedirect} style={styles.topButton}>
+            <Image source={userIcon} style={styles.icon} />
+            <Text style={{color: '#ffffff', fontSize: 15}}>Hi, {name}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleRefernearn} style={styles.topButton}>
+            <Image source={referIcon} style={styles.icon} />
+            <Text style={{color: '#ffffff', fontSize: 15}}>Refer & Earn</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleDeposit} style={styles.topButton}>
+            <Image source={depositIcon} style={styles.icon} />
+            <Text style={{color: '#ffffff', fontSize: 15}}>Deposit</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal visible={isVisible} transparent={true} animationType="fade">
+          <View style={styles.popupOverlay}>
+            <View style={styles.popupContainer}>
+              <View style={styles.popupHeader}>
+                <TouchableOpacity onPress={handleClose}>
+                  <Text style={styles.closeButton}>×</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.popupContent}>
+                <Image source={errorIcon} style={styles.errorIcon} />
+                <Text style={styles.popupTitle}>Payment Failed</Text>
+                <TouchableOpacity
+                  onPress={handleRetry}
+                  style={styles.retryButton}>
+                  <Text style={styles.retryButtonText}>Retry</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal visible={popupVisible} transparent={true} animationType="fade">
+          <View style={styles.popupOverlay}>
+            <View style={styles.popupContainer}>
+              <View style={styles.popupHeader}>
+                <TouchableOpacity onPress={() => setPopupVisible(false)}>
+                  <Text style={styles.closeButton}>×</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.popupContent}>
+                <Image source={tresery} style={styles.popupImage} />
+                <Text style={styles.popupTitle}>Congratulations!!</Text>
+                <Text style={styles.popupMessage}>
+                  You Earned ₹{dashboardData[currentVideoIndex]?.points}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={withdrawalPopupVisible}
+          transparent={true}
+          animationType="fade">
+          <View style={styles.popupOverlay}>
+            <View style={styles.popupContainer}>
+              <View style={styles.popupHeader}>
+                <TouchableOpacity
+                  onPress={() => setWithdrawalPopupVisible(false)}>
+                  <Text style={styles.closeButton}>×</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.popupContent}>
+                <Text style={styles.popupTitle}>Minimum Withdrawal Amount</Text>
+                <Text>You need to have at least ₹500 to withdraw.</Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <View style={styles.accountInfo}>
+          <View style={styles.flexRow}>
+            <Text>Welcome to </Text>
+            <Image source={paisebnaotext} style={styles.smallTextLogo} />
+            <Text>
+              {' '}
+              <Text style={styles.bold}>App</Text> Watch & Earn
+            </Text>
+          </View>
+          <View style={styles.popupHeader}>
+            {/* Views Info */}
+            <View
+              style={{
+                backgroundColor: '#3C9AFB',
+                borderRadius: 10,
+                color: '#3C9AFB',
+                width: 104,
+                height: 76,
+                marginRight: 10,
+                flex: 1, // Ensures the component takes up all available space
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}>
+              <Image source={viewsIcon} style={styles.icon} alt="Views" />
+              <View style={styles.pointsDisplayWrapper}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  <Text style={{color: '#ffffff', fontSize: 15}}>
+                    {totalViews} Views
+                  </Text>
+                )}
+              </View>
+            </View>
+
+            {/* Balance Info */}
+            <View style={styles.balanceInfo}>
+              <View style={styles.balanceAmount}>
+                <View style={styles.pointsDisplayWrapper}>
+                  {isLoading ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  ) : (
+                    <Text style={{color: '#ffffff', fontSize: 22}}>
+                      {formatCurrency(pointsEarned)}
+                    </Text>
+                  )}
+                </View>
+                <Text style={{color: '#ffffff', fontSize: 15}}>
+                  Account Balance
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={handleAmountWithdrawal}
+                style={styles.withdrawButton}>
+                <Text
+                  onPress={handleAmountWithdrawal}
+                  style={{color: '#ffffff', fontSize: 15}}>
+                  Withdraw
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* <View style={styles.flexRow}>
+          <View style={styles.viewsInfo}>
+            <Image source={viewsIcon} style={styles.viewsIcon} />
+            <View style={styles.pointsDisplayWrapper}>
+              {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> : <Text>{totalViews} Views</Text>}
+            </View>
+          </View>
+
+          <View style={styles.balanceInfo}>
+            <View style={styles.pointsDisplayWrapper}>
+              {isLoading ? <ActivityIndicator size="small" color="#0000ff" /> : <Text style={styles.balanceAmount}>{formatCurrency(pointsEarned)}</Text>}
+            </View>
+            <Text>Account Balance</Text>
+            <TouchableOpacity onPress={handleAmountWithdrawal} style={styles.withdrawButton}>
+              <Text>Withdraw</Text>
+            </TouchableOpacity>
+          </View>
+        </View> */}
+
+          {/* {<MembershipPlans/>} */}
+        </View>
+        <View style={styles.videoSection}>
+          <Text style={styles.videoTitle}>
+            View this video and get ₹
+            {dashboardData[currentVideoIndex]?.video_id}
+          </Text>
+
+          {/* <Video
+            url={{uri: dashboardData[currentVideoIndex]?.video_id}}
+            paused={!isPlaying}
+            controls={false}
+            onProgress={handleProgress}
+          /> */}
+
+          <View>
+            {/* <YoutubePlayer style={styles.videoSection}
+  ref={this.playerRef}
+  height={300}
+  width={400}
+  videoId={dashboardData[currentVideoIndex]?.video_id}
+  onChangeState={event => console.log(event)}
+  onReady={() => console.log('ready')}
+  onError={e => console.log(e)}
+  onPlaybackQualityChange={q => console.log(q)}
+  volume={100}
+  playbackRate={1}
+  initialPlayerParams={{
+    cc_lang_pref: 'us',
+    showClosedCaptions: true,
+  }}
+/> */}
+          </View>
+          <TouchableOpacity
+            onPress={handlePlayButtonClick}
+            style={styles.playButton}>
+            <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
+          </TouchableOpacity>
+
+          <View style={styles.progressBarContainer}>
+            <View style={styles.progressBar}>
+              <View style={[styles.progress, {width: `${played * 100}%`}]} />
+            </View>
+            <Image source={earcchest} style={styles.progressImage} />
+          </View>
+
+          <View style={styles.flexRowNew}>
+            <View style={styles.videoDetails}>
+              <Text>Watch full video and earn</Text>
+              <Image source={earncash} style={styles.earnCash} />
+            </View>
+            <View style={styles.videoTimer}>
+              <Text>
+                <Text style={styles.red}>{formatTime(currentTime)}</Text> /{' '}
+                {formatTime(dashboardData[currentVideoIndex]?.timer)}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      {/* <View style={styles.container}>
+      <Text style={styles.title}>Our Partners</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.slider}>
+        {partners.map(partner => (
+          // eslint-disable-next-line no-undef
+          <TouchableOpacity key={partner.id} onPress={() => Linking.openURL(partner.url)}>
+            <Image source={partner.image} style={styles.image} />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View> */}
+    </ScrollView>
+  );
+};
 
 export default Dashboard2;
