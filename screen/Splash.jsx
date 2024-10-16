@@ -27,7 +27,6 @@ const Splash = ({navigation}) => {
         source={require('../assets/images/paisebnaologo_1.png')}
       /> */}
       <Image tyle={styles.text} source={paisebnaologo} />
-
       <Image source={group_1} style={{marginTop: 20}} />
     </View>
   );
