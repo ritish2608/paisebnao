@@ -1,23 +1,150 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 const dashboardStyles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
+  gradient: {
+    padding: 1,
+    width: 100,
+    marginHorizontal: 40,
+    marginTop: 5,
     justifyContent: 'center',
+    flex: 5, // Adjust the size as needed
+    // Add any additional styles if necessary
+  },
+  container: {
+    flex: 1,
     padding: 10,
+    backgroundColor: '#fff',
+  },
+  container1: {
+    marginTop: 50,
+    flex: 1,
+    padding: 12,
+    backgroundColor: '#fff',
   },
 
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+
+  plansTitle: {
+    marginBottom: 3,
+    fontSize: 16,
+    fontWeight: 700,
+    marginTop: 6,
+  },
+  planTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  planNote: {
+    fontSize: 14,
+    color: 'white',
+    backgroundColor: 'orange',
+    padding: 35,
+  },
+  depositItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  depositText: {
+    flex: 1,
+    fontSize: 14,
+    color: 'black',
+  },
+  colorArrow: {
+    color: 'orange',
+  },
+  amount: {
+    fontWeight: 'bold',
+    color: 'green',
+  },
+  depositButton: {
+    backgroundColor: '#28a745',
+    padding: 6,
+    borderRadius: 5,
+    margin: 5,
+  },
+  buttonText: {
+    color: '#fff',
+  },
+  freePlan: {
+    marginVertical: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  confirmButton: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    textAlign: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+
+  container2: {
+    flex: 1,
+    padding: 4,
+    backgroundColor: '#fff',
+
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+  },
+  video: {
+    width: '100%',
+    height: 300,
+  },
+  plan: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 'auto',
+    height: '200',
+    marginBottom: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    fontSize: 12,
+    marginTop: '200',
+    flex: 1,
+  },
   popupOverlay: {
-    position: 'absolute',  // Similar to position: fixed in CSS
+    position: 'absolute', // Similar to position: fixed in CSS
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent black background
-    justifyContent: 'center',  // Centers content vertically
-    alignItems: 'center',  // Centers content horizontally
-    zIndex: 1000,  // Ensures it's on top of other content
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+    justifyContent: 'center', // Centers content vertically
+    alignItems: 'center', // Centers content horizontally
+    zIndex: 1000, // Ensures it's on top of other content
   },
 
   popupContainer: {
@@ -80,14 +207,33 @@ const dashboardStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
 
-      backgroundColor: '#28a745',
+    backgroundColor: '#28a745',
+    padding: 10,
+    borderRadius: 5,
+  },
+  topButtonUser: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    color: '#ffffff',
+
+    fontSize: 15,
+    backgroundColor: '#FF9D0A',
+    padding: 10,
+    borderRadius: 5,
+  },
+  topButtonUserRef: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    color: '#ffffff',
+
+    fontSize: 15,
+    backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
   },
   icon: {
     width: 20,
     height: 20,
-    marginRight: 5,
   },
   accountInfo: {
     marginTop: 20,
@@ -97,7 +243,7 @@ const dashboardStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    
+    alignContent: 'center',
   },
   smallTextLogo: {
     width: 100,
@@ -106,13 +252,13 @@ const dashboardStyles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold',
+    color: 'black',
+    fontsize: 26,
   },
   viewsInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 20,
-
-
+    marginRight: 25,
   },
   viewsIcon: {
     width: 30,
@@ -128,40 +274,55 @@ const dashboardStyles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     borderRadius: 5,
   },
+  // plan: {
+  //   marginBottom: 16,
+  //   padding: 35,
+  //   borderWidth: 1,
+  //   borderColor: '#ccc',
+  //   borderRadius: 8,
+  //   alignContent: 'center',
+  //   flex: 1,
+
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   balanceInfo: {
     alignItems: 'center',
-  flexDirection: 'row',
-     fontsize: 24,
-  fontWeight: 'bold',
-  backgroundColor: '#FF9D0A',
+    flexDirection: 'row',
+    fontsize: 24,
+    fontWeight: 'bold',
+    backgroundColor: '#FF9D0A',
 
-  width: 274,
-  height: 76,
-  borderRadius: 10,
+    width: 274,
+    height: 76,
+    borderRadius: 10,
   },
   balanceAmount: {
     textAlign: 'center', // Equivalent to text-align in CSS
-    fontSize: 24,        // Font size
-    fontWeight: 'bold',  // Font weight
-    color: '#ffffff',    // Text color
-    borderRadius: 8,     // Border radius for rounded corners
-    padding: 10,         // Padding
-    marginVertical: 10, 
+    fontSize: 24, // Font size
+    fontWeight: 'bold', // Font weight
+    color: '#ffffff', // Text color
+    borderRadius: 8, // Border radius for rounded corners
+    padding: 10, // Padding
+    marginVertical: 10,
   },
   withdrawButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#007BFF',
     padding: 10,
+    alignContent: 'flex-end',
     borderRadius: 5,
     marginTop: 10,
   },
   videoSection: {
-    marginTop: 20,
+    marginTop: 100,
     width: '100%',
     alignItems: 'center',
   },
   videoTitle: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
+    fontWeight: 'bold',
+    color: 'black',
   },
   videoPlayerWrapper: {
     width: '100%',
@@ -179,10 +340,14 @@ const dashboardStyles = StyleSheet.create({
     display: 'none',
   },
   playButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+    position: 'absolute',
+
+    left: '50%',
+    backgroundColor: '#007BFF', // Semi-transparent red
+    padding: 15,
+    borderRadius: 10,
   },
+
   progressBarContainer: {
     width: '100%',
     alignItems: 'center',

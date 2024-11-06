@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import lock from '../assets/images/lock.png';
-
 
 const ForgetPassword = () => {
   const [code, setCode] = useState('');
@@ -11,9 +17,13 @@ const ForgetPassword = () => {
   const [isResendEnabled, setIsResendEnabled] = useState(false);
 
   const navigation = useNavigation();
+  const [getEmail, setEmail] = useState('');
   const route = useRoute();
-  const email = route.params?.email; // Get email from route params
 
+  const {emailToSend} = route.params; // Get email from route params
+
+  console.log('EMAIL ADDRESS ::: FORGET ', emailToSend);
+  console.log('EMAIL ADDRESS ::: FORGET  66', emailToSend);
   useEffect(() => {
     if (timer === 0) {
       setIsResendEnabled(true);
@@ -21,13 +31,13 @@ const ForgetPassword = () => {
     }
 
     const intervalId = setInterval(() => {
-      setTimer((prevTimer) => prevTimer - 1);
+      setTimer(prevTimer => prevTimer - 1);
     }, 1000);
 
     return () => clearInterval(intervalId);
   }, [timer]);
 
-  const handleChange = (value) => {
+  const handleChange = value => {
     if (/^\d{0,4}$/.test(value)) {
       setCode(value);
       setValidationMessage('');
@@ -37,8 +47,8 @@ const ForgetPassword = () => {
   };
 
   const handleNavigation = () => {
-   // navigation.navigate('CreateNewPassword');
-        navigation.navigate('CreateNewPassword');
+    // navigation.navigate('CreateNewPassword');
+    navigation.navigate('CreateNewPassword', {emailToSend});
   };
 
   const handleResend = () => {
@@ -54,7 +64,8 @@ const ForgetPassword = () => {
       </View>
       <Text style={styles.title}>Verify Account</Text>
       <Text style={styles.instructions}>
-        Code has been sent to <Text style={styles.emailHighlight}>{email}</Text>
+        Code has been sent to{' '}
+        <Text style={styles.emailHighlight}>{emailToSend}</Text>
         Enter the code to verify your account.
       </Text>
       <View style={styles.inputWrapper}>
@@ -67,11 +78,18 @@ const ForgetPassword = () => {
           onChangeText={handleChange}
         />
       </View>
-      {validationMessage && <Text style={styles.validationMessage}>{validationMessage}</Text>}
+      {validationMessage && (
+        <Text style={styles.validationMessage}>{validationMessage}</Text>
+      )}
       <Text style={styles.resendText}>
         Didn’t Receive Code?{' '}
-        <TouchableOpacity onPress={isResendEnabled ? handleResend : null} disabled={!isResendEnabled}>
-          <Text style={[styles.resendLink, !isResendEnabled && styles.disabled]}>Resend Code</Text>
+        <TouchableOpacity
+          onPress={isResendEnabled ? handleResend : null}
+          disabled={!isResendEnabled}>
+          <Text
+            style={[styles.resendLink, !isResendEnabled && styles.disabled]}>
+            Resend Code
+          </Text>
         </TouchableOpacity>
       </Text>
       <Text style={styles.resendText}>
@@ -112,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-   icon: {
+  icon: {
     width: 20,
     height: 20,
     marginRight: 10,
@@ -127,7 +145,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
   },
-   inputField: {
+  inputField: {
     flex: 1,
     fontSize: 16,
   },
@@ -155,7 +173,7 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#ff0000',
     padding: 15,
     borderRadius: 5,
   },

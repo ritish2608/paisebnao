@@ -1,21 +1,55 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 const landingStyles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  container2: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: 100, // Set your desired width
+    height: 100, // Set your desired height
+  },
+  logo2: {
+    width: '100%',
+    height: 200, // Adjust height as needed
+    marginBottom: 20,
+    resizeMode: 'contain',
+  },
+  container1: {
     flex: 1, // Ensures the container takes up the full screen height
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
-    height:30,
+    height: 30,
   },
   displayContent: {
     // In React Native, there's no direct equivalent for 'display: contents'
     // You can use it as a placeholder or simply omit it
   },
   logo: {
+    width: '50%',
+    maxWidth: 50,
+
+    // marginBottom: 20, // Uncomment if needed
+  },
+  logo_: {
     width: '100%',
     maxWidth: 120,
+    marginTop: 10,
+    height: 100,
+    transform: [{translateY: -50}],
+    flex: 1,
+    justifyContent: 'center', // Center vertically
+
     // marginBottom: 20, // Uncomment if needed
   },
   title: {

@@ -1,38 +1,38 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
   Image,
   TouchableOpacity,
+  StyleSheet,
   ScrollView,
   Modal,
+  Button,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
+import YoutubeIframe from 'react-native-youtube-iframe';
 
 import userIcon from '../assets/images/user.png';
 import referIcon from '../assets/images/rupee.png';
 import depositIcon from '../assets/images/deposit.png';
 import viewsIcon from '../assets/images/supereye.png';
+
 import errorIcon from '../assets/images/error.png';
 import styles from './../styling/dashboardStyling';
 import paisebnaotext from '../assets/images/paisebnaotext.png';
 import tresery from '.././assets/images/chestmoney.png';
 import earncash from '../assets/images/newCash.png';
 import earcchest from '../assets/images/earnChest.png';
-import {useNavigation} from '@react-navigation/native';
-import {addReward, dashboardApi, fetchUserDetail, fetchUserdetail} from './api';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import Video from 'react-native-video';
-import YoutubeIframe from 'react-native-youtube-iframe';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {useNavigation} from '@react-navigation/native';
+import {addReward, dashboardApi, fetchUserdetail} from './api';
 import MembershipPlans from './MembershipPlans';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import partnerImage1 from '../assets/images/partner.png';
 
-const Dashboard2 = () => {
-  const [videos, setVideos] = useState();
-  const playerRef = useRef(null);
-  const [timer, setTimer] = useState(15); // Initial timer is 15 seconds
-  const [getUrl, setUrl] = useState(0);
+import YoutubePlayer from 'react-native-youtube-iframe';
+
+const Dashboard = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [withdrawalPopupVisible, setWithdrawalPopupVisible] = useState(false);
@@ -50,15 +50,12 @@ const Dashboard2 = () => {
   const [referralId, setReferralId] = useState(null);
   const [referralCount, setReferralCount] = useState(0);
   const [name, setName] = useState('User');
-  const webViewRef = useRef(null);
+
   const navigation = useNavigation();
   const handleClose = () => setIsVisible(false);
-  const [videoDuration, setVideoDuration] = useState(0);
-
   const handleRetry = () => {
     // Retry logic here
   };
-
   const handleRedirect = () => {
     // Handle redirection
     navigation.navigate('Profile');
@@ -66,14 +63,11 @@ const Dashboard2 = () => {
   const handleRefernearn = () => {
     // Handle refer & earn
     // navigation.navigate(`/referandearn?points-earned=${formatCurrency(pointsEarned)}&referralId=${referralId}&referralCount=${referralCount}`);
-    navigation.navigate(
-      'ReferAndEarn',
-      referralId,
-      referralCount,
-      pointsEarned,
-    );
+    navigation.navigate('ReferAndEarn');
   };
   const handleDeposit = () => {
+    // Handle deposit
+
     navigation.navigate('PlatformFees');
   };
   const handleAmountWithdrawal = () => {
@@ -87,89 +81,46 @@ const Dashboard2 = () => {
     }
   };
   const handlePlayButtonClick = () => {
-    setIsPlaying(!isPlaying);
-    // if (currentVideoIndex < dashboardData?.length - 1) {
-    //   setIsPlaying(prevIsPlaying => !prevIsPlaying);
-    // }
+    // setIsPlaying(!isPlaying);
+    if (currentVideoIndex < dashboardData?.length - 1) {
+      setIsPlaying(prevIsPlaying => !prevIsPlaying);
+    }
   };
-
-  // const handlePlayButtonClick = action => {
-  //   const script = `
-  //     var player = document.getElementById('player');
-  //     if (action === 'play') {
-  //       player.playVideo();
-  //     } else {
-  //       player.pauseVideo();
-  //     }
-  //   `;
-
-  //   webViewRef.current.injectJavaScript(script.replace('action', action));
-  // };
-
-  // const handleProgress = state => {
-  //   const videoDuration = dashboardData[currentVideoIndex]?.timer;
-  //   setTimer(videoDuration);
-  //   Alert.alert(state.playedSeconds);
-  //   const playedRatio = state.playedSeconds / videoDuration;
-  //   setPlayed(playedRatio);
-  //   console.log('Current time :: ', timer);
-  //   setCurrentTime(state.playedSeconds);
-  //   console.log('Current state.playedSeconds :: ', state.playedSeconds);
-  //   if (state.playedSeconds >= videoDuration && !videoCompleted) {
-  //     setIsPlaying(false);
-  //     setVideoCompleted(true);
-
-  //     // Step 1: Display the popup after a delay
-  //     setTimeout(() => {
-  //       setPopupVisible(true);
-
-  //       // Step 2: Add the reward if not added already
-  //       if (!rewardAdded) {
-  //         handleAddReward(dashboardData[currentVideoIndex]?.id);
-  //         setRewardAdded(true);
-  //       }
-  //       const handleAddReward = async id => {
-  //         try {
-  //           const data = await addReward(id);
-  //           console.log(data, 'add reward');
-  //           setRewardAdded(true);
-  //         } catch (error) {
-  //           console.error('Error adding reward:', error);
-  //         }
-  //       };
-  //       // Step 3: Hide the popup and move to the next video after another delay
-  //       setTimeout(() => {
-  //         setPopupVisible(false);
-  //         handleNextVideo();
-  //       }, 3000); // Adjust the timeout duration as needed
-  //     }, 1000); // Initial delay before showing the popup
-  //   }
-  // };
-
   const handleProgress = state => {
-    setCurrentTime(state.playedSeconds);
-    setIsPlaying(prev => !prev);
-    if (isPlaying) {
-      playerRef.current.pauseVideo();
-    } else {
-      playerRef.current.playVideo();
-    }
-
-    const videoDuration = dashboardData[currentVideoIndex]?.timer;
+    const videoDuration = dashboardData[currentVideoIndex]?.timer || 0;
     const playedRatio = state.playedSeconds / videoDuration;
-    console.log('VIDEO playedRatio :: state', state);
-    console.log('VIDEO playedRatio :: timer', videoDuration);
-    console.log('VIDEO playedRatio playedSeconds:: ', state.playedSeconds);
-
+    setPlayed(playedRatio);
     setCurrentTime(state.playedSeconds);
-    console.log('VIDEO playedRatio 1:: videoDuration', videoDuration);
 
-    if (state.playedSeconds <= videoDuration && !videoCompleted) {
-      setRewardAdded(true);
+    if (state.playedSeconds >= videoDuration && !videoCompleted) {
+      setIsPlaying(false);
+      setVideoCompleted(true);
+
+      // Step 1: Display the popup after a delay
+      setTimeout(() => {
+        setPopupVisible(true);
+
+        // Step 2: Add the reward if not added already
+        if (!rewardAdded) {
+          handleAddReward(dashboardData[currentVideoIndex]?.id);
+          setRewardAdded(true);
+        }
+        const handleAddReward = async id => {
+          try {
+            const data = await addReward(id);
+            console.log(data, 'add reward');
+            setRewardAdded(true);
+          } catch (error) {
+            console.error('Error adding reward:', error);
+          }
+        };
+        // Step 3: Hide the popup and move to the next video after another delay
+        setTimeout(() => {
+          setPopupVisible(false);
+          handleNextVideo();
+        }, 3000); // Adjust the timeout duration as needed
+      }, 1000); // Initial delay before showing the popup
     }
-
-    // Assuming handleNextVideo is a function that plays the next video
-    handleNextVideo();
   };
 
   const handleNextVideo = () => {
@@ -183,28 +134,51 @@ const Dashboard2 = () => {
     }
   };
 
-  // const videoID = getYouTubeVideoID(url);
-  // console.log(videoID); // Output: "dQw4w9WgXcQ"
   const handleVideoReady = () => {
     setIsLoading(false);
   };
+  const partners = [
+    {
+      id: 1,
+      url: 'https://yarsi.in',
+      image: require('.././assets/images/partner.png'),
+    },
+    {
+      id: 2,
+      url: 'https://yarsi.in',
+      image: require('.././assets/images/partner.png'),
+    },
+    {
+      id: 3,
+      url: 'https://yarsi.in',
+      image: require('.././assets/images/partner.png'),
+    },
+    {
+      id: 4,
+      url: 'https://yarsi.in',
+      image: require('.././assets/images/partner.png'),
+    },
+  ];
 
   const fetchDashboardData = useCallback(async () => {
     try {
       const response = await dashboardApi();
-      console.log('Dashboard API response', response.data);
+      console.log(response.data, 'Dashboard API response');
 
       if (response.data && Array.isArray(response.data)) {
         setDashboardData(response.data);
-        console.log('Video id is :: ', response.data[currentVideoIndex]?.link);
+        console.log(
+          'Video id is :: ',
+          response.data[currentVideoIndex]?.video_id,
+        );
       } else {
         console.error('Invalid data format received from dashboard API');
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
-    dashboardApi();
   }, [currentVideoIndex]);
+
   const formatTime = seconds => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -213,8 +187,8 @@ const Dashboard2 = () => {
 
   const handlefetchUserdetail = async () => {
     try {
-      const data = await fetchUserDetail();
-      console.log('fetchUserdetail fetching dashboard data:', data);
+      const data = await fetchUserdetail();
+      console.log('RESPONCE ::: ' + data);
       setReferralCount(data?.data?.referral_count);
       setReferralId(data?.data?.referral_id);
       setName(data?.data?.first_name);
@@ -234,19 +208,11 @@ const Dashboard2 = () => {
     const checkDataAndRefresh = () => {
       if (dashboardData.length > 0) {
         if (currentVideoIndex < dashboardData.length) {
-          const currentLink = dashboardData[currentVideoIndex]?.link;
-          const video_link = getYouTubeVideoID(currentLink);
-          setVideos(video_link);
-
-          console.log(
-            'checkDataAndRefresh timer ::::',
-            dashboardData[currentVideoIndex].timer,
-          );
-          setTimer(dashboardData[currentVideoIndex].timer);
-
+          const currentLink =
+            dashboardData[currentVideoIndex]?.redirection_link;
           if (!currentLink) {
-            console.log('DATAB ', dashboardData[currentVideoIndex]?.link);
-            window.location.reload(); // Refresh the page if the link is invalid
+            console.error('Invalid video link, refreshing the page');
+            //  window.location.reload(); // Refresh the page if the link is invalid
           } else {
             setIsPlaying(true);
             setRewardAdded(false);
@@ -267,36 +233,10 @@ const Dashboard2 = () => {
   }, [dashboardData, currentVideoIndex]);
 
   useEffect(() => {
+    // Reset videoCompleted and rewardAdded states when the currentVideoIndex changes
     setVideoCompleted(false);
     setRewardAdded(false);
   }, [currentVideoIndex]);
-
-  // const url = dashboardData[currentVideoIndex]?.redirection_link;
-  // console.log(
-  //   'VIDEO URL :: ',
-  //   dashboardData[currentVideoIndex]?.redirection_link,
-  // );
-  // if (!url) {
-  //   console.log('VIDEO URL :: ', url);
-  //   throw new Error('URL is undefined');
-  // } else {
-  //   const videoId = getYouTubeVideoID(
-  //     dashboardData[currentVideoIndex].redirection_link,
-  //   );
-
-  //   setVideos(videoId);
-
-  //   //const playedRatio = state.playedSeconds / videoDuration;
-  //   // setPlayed(playedRatio);
-  //   // const [videos, setVideos] = useState([]);
-  // }
-  const getYouTubeVideoID = urlVideo => {
-    const regex =
-      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    // console.log('url is :: ', urlVideo);
-    const matches = urlVideo.match(regex);
-    return matches ? matches[1] : null; // Return the video ID or null if not found
-  };
 
   const formatCurrency = amount => {
     return new Intl.NumberFormat('en-IN', {
@@ -467,70 +407,50 @@ const Dashboard2 = () => {
             </TouchableOpacity>
           </View>
         </View> */}
-
-          {<MembershipPlans />}
         </View>
-        <View View style={styles.plan}>
+        {<MembershipPlans />}
+        <View style={styles.videoSection}>
           <Text style={styles.videoTitle}>
-            View this video and get ₹
-            {dashboardData[currentVideoIndex]?.video_id}
+            View this video and get ₹{dashboardData[currentVideoIndex]?.points}
           </Text>
-
-          {/* <Video
-            url={{uri: dashboardData[currentVideoIndex]?.video_id}}
+          <View style={styles.videoPlayerWrapper}>
+            {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+            {/* <View
+              style={[styles.videoPlayerWrapper, isLoading && styles.hidden]}>
+             
+            </View> */}
+          </View>
+          <View>
+            {/* <YoutubePlayer style={styles.videoSection}
+  ref={this.playerRef}
+  height={300}
+  width={400}
+  videoId={dashboardData[currentVideoIndex]?.video_id}
+  onChangeState={event => console.log(event)}
+  onReady={() => console.log('ready')}
+  onError={e => console.log(e)}
+  onPlaybackQualityChange={q => console.log(q)}
+  volume={100}
+  playbackRate={1}
+  initialPlayerParams={{
+    cc_lang_pref: 'us',
+    showClosedCaptions: true,
+  }}
+/> */}
+          </View>
+          <YoutubePlayer
+            videoId={'l3zipB6nek8'}
             paused={!isPlaying}
             controls={false}
             onProgress={handleProgress}
-          /> */}
-
-          <View style={styles.container}>
-            {/* <YoutubePlayer
-              videoId={'l3zipB6nek8'}
-              paused={!isPlaying}
-              controls={false}
-              onProgress={handleProgress}
-              onLoad={handleVideoReady}
-              style={styles.videoPlayer}
-            /> */}
-            <YoutubeIframe
-              style={styles.videoSection}
-              ref={playerRef}
-              height={200}
-              width={300}
-              //   src={dashboardData[currentVideoIndex]?.link}
-              videoId={videos}
-              onChangeState={event => console.log(event)}
-              onReady={() => console.log('ready')}
-              onError={e => console.log(e)}
-              onPlaybackQualityChange={q => console.log(q)}
-              volume={100}
-              playbackRate={1}
-              onChange={event => {
-                if (event === 'ready') {
-                  playerRef.current.getDuration().then(duration => {
-                    setVideoDuration(duration);
-                  });
-                } else if (event === 'playing') {
-                  playerRef.current.getCurrentTime().then(time => {
-                    Alert.alert(time);
-                    setCurrentTime(time);
-                  });
-                }
-              }}
-              play={isPlaying}
-              onProgress={handleProgress}
-              initialPlayerParams={{
-                cc_lang_pref: 'us',
-                showClosedCaptions: true,
-              }}
-            />
-            <TouchableOpacity
-              // onPress={() => playerRef.current.play()}
-              onPress={handlePlayButtonClick}
-              style={styles.playButton}>
-              <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
-            </TouchableOpacity>
-          </View>
+            onLoad={handleVideoReady}
+            style={styles.videoPlayer}
+          />
+          {/* <TouchableOpacity
+            onPress={handlePlayButtonClick}
+            style={styles.playButton}>
+            <Text>{isPlaying ? 'Pause' : 'Play'}</Text>
+          </TouchableOpacity> */}
 
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBar}>
@@ -547,7 +467,7 @@ const Dashboard2 = () => {
             <View style={styles.videoTimer}>
               <Text>
                 <Text style={styles.red}>{formatTime(currentTime)}</Text> /{' '}
-                {formatTime(timer)}
+                {formatTime(dashboardData[currentVideoIndex]?.timer)}
               </Text>
             </View>
           </View>
@@ -568,4 +488,4 @@ const Dashboard2 = () => {
   );
 };
 
-export default Dashboard2;
+export default Dashboard;

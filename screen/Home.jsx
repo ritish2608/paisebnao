@@ -27,8 +27,9 @@ import Video from 'react-native-video';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import MembershipPlans from './MembershipPlans';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VideoPlayer from './VideoPlayer';
 
-const Dashboard2 = () => {
+const Home = () => {
   const [videos, setVideos] = useState();
   const playerRef = useRef(null);
   const [timer, setTimer] = useState(15); // Initial timer is 15 seconds
@@ -50,6 +51,7 @@ const Dashboard2 = () => {
   const [referralId, setReferralId] = useState(null);
   const [referralCount, setReferralCount] = useState(0);
   const [name, setName] = useState('User');
+  const [getUserData, setUserData] = useState('user_data');
   const webViewRef = useRef(null);
   const navigation = useNavigation();
   const handleClose = () => setIsVisible(false);
@@ -61,7 +63,7 @@ const Dashboard2 = () => {
 
   const handleRedirect = () => {
     // Handle redirection
-    navigation.navigate('Profile');
+    navigation.navigate('Profile', {});
   };
   const handleRefernearn = () => {
     // Handle refer & earn
@@ -76,21 +78,34 @@ const Dashboard2 = () => {
   const handleDeposit = () => {
     navigation.navigate('PlatformFees');
   };
+
   const handleAmountWithdrawal = () => {
-    // Handle withdrawal
-    if (pointsEarned < 500) {
+    if (pointsEarned < 5000) {
       setWithdrawalPopupVisible(true);
-      // navigation.navigate('WithdrawAmount');
     } else {
       navigation.navigate('WithdrawAmount');
-      //   navigation.navigate(`/amount-withdraw?balance=${pointsEarned}`);
+      // navigate(
+      //   `/amount-withdraw?balance=${pointsEarned}&&refercount=${referralCount}`,
+      // );
     }
   };
+
+  //   const handleAmountWithdrawal = () => {
+  //     // Handle withdrawal
+  //     if (pointsEarned < 500) {
+  //       setWithdrawalPopupVisible(true);
+  //        navigation.navigate('WithdrawAmount');
+  //     } else {
+  //       navigation.navigate('WithdrawAmount');
+  //       //   navigation.navigate(`/amount-withdraw?balance=${pointsEarned}`);
+  //     }
+  //   };
   const handlePlayButtonClick = () => {
+    console.log('Button click :::: ', currentVideoIndex);
     setIsPlaying(!isPlaying);
-    // if (currentVideoIndex < dashboardData?.length - 1) {
-    //   setIsPlaying(prevIsPlaying => !prevIsPlaying);
-    // }
+    if (currentVideoIndex < dashboardData?.length - 1) {
+      setIsPlaying(prevIsPlaying => !prevIsPlaying);
+    }
   };
 
   // const handlePlayButtonClick = action => {
@@ -148,12 +163,6 @@ const Dashboard2 = () => {
 
   const handleProgress = state => {
     setCurrentTime(state.playedSeconds);
-    setIsPlaying(prev => !prev);
-    if (isPlaying) {
-      playerRef.current.pauseVideo();
-    } else {
-      playerRef.current.playVideo();
-    }
 
     const videoDuration = dashboardData[currentVideoIndex]?.timer;
     const playedRatio = state.playedSeconds / videoDuration;
@@ -215,10 +224,26 @@ const Dashboard2 = () => {
     try {
       const data = await fetchUserDetail();
       console.log('fetchUserdetail fetching dashboard data:', data);
+      AsyncStorage.setItem('userData', JSON.stringify(data));
+      // Alert.alert('Data saved successfully!');
+      //   const saved = AsyncStorage.setItem('USER_DATA', data);
+      //   console.log('fetchUserdetail fetching dashboard saved:', saved);
+
+      const ll = AsyncStorage.setItem('apiData', data);
+      //   const jsonValue = await AsyncStorage.getItem('apiData');
+      //   jsonValue != null ? JSON.parse(jsonValue) : null;
+      console.log(
+        'fetchUserdetail fetching dashboard jsonValue save data:',
+        ll,
+      );
+
+      setUserData(data);
+      //const [getUserData,setUserData] = useState('user_data');
       setReferralCount(data?.data?.referral_count);
       setReferralId(data?.data?.referral_id);
       setName(data?.data?.first_name);
       setPointsEarned(data?.data?.points);
+      AsyncStorage.setItem('points', pointsEarned);
       setTotalViews(data?.data?.views);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -266,6 +291,19 @@ const Dashboard2 = () => {
     return () => clearTimeout(delay);
   }, [dashboardData, currentVideoIndex]);
 
+  const handleCurrentTime = async () => {
+    if (playerRef.current) {
+      const time = await playerRef.current.getCurrentTime();
+      console.log('CURRENT TIME ::::: ', time);
+      console.log('CURRENT formatTime(timer) ::::: ', formatTime(timer));
+      const time_current = setCurrentTime(time);
+      if (formatTime(time) === formatTime(timer)) {
+        console.log('PLAY SONGS TIME OUT !!');
+
+        // handlePlayButtonClick;
+      }
+    }
+  };
   useEffect(() => {
     setVideoCompleted(false);
     setRewardAdded(false);
@@ -492,36 +530,57 @@ const Dashboard2 = () => {
               onLoad={handleVideoReady}
               style={styles.videoPlayer}
             /> */}
-            <YoutubeIframe
+
+            {/* <VideoPlayer
               style={styles.videoSection}
               ref={playerRef}
               height={200}
-              width={300}
+              width={900}
+              currentUrl={dashboardData[currentVideoIndex]?.link}
+              isPlaying={isPlaying}
+              onProgress={handleProgress}
+              onVideoReady={handleVideoReady}
+            /> */}
+
+            {/* <YoutubePlayer
+              height={300}
+              play={isPlaying}
+              videoId={videos}
+              ref={playerRef}
+              onReady={() => console.log('Player is ready')}
+              onChangeState={state => {
+                console.log(`Player state: ${state}`);
+                if (state === 'playing') {
+                  const interval = setInterval(() => {
+                    handleCurrentTime();
+                  }, 1000); // Update current time every second
+                  return () => clearInterval(interval); // Clear the interval on unmount
+                }
+              }}
+            /> */}
+
+            <YoutubeIframe
+              style={styles.videoSection}
+              ref={playerRef}
+              height={350}
+              width={350}
               //   src={dashboardData[currentVideoIndex]?.link}
               videoId={videos}
-              onChangeState={event => console.log(event)}
               onReady={() => console.log('ready')}
               onError={e => console.log(e)}
               onPlaybackQualityChange={q => console.log(q)}
               volume={100}
               playbackRate={1}
-              onChange={event => {
-                if (event === 'ready') {
-                  playerRef.current.getDuration().then(duration => {
-                    setVideoDuration(duration);
-                  });
-                } else if (event === 'playing') {
-                  playerRef.current.getCurrentTime().then(time => {
-                    Alert.alert(time);
-                    setCurrentTime(time);
-                  });
-                }
-              }}
               play={isPlaying}
               onProgress={handleProgress}
-              initialPlayerParams={{
-                cc_lang_pref: 'us',
-                showClosedCaptions: true,
+              onChangeState={state => {
+                console.log(`Player state: ${state}`);
+                if (state === 'playing') {
+                  const interval = setInterval(() => {
+                    handleCurrentTime();
+                  }, 1000); // Update current time every second
+                  return () => clearInterval(interval); // Clear the interval on unmount
+                }
               }}
             />
             <TouchableOpacity
@@ -568,4 +627,4 @@ const Dashboard2 = () => {
   );
 };
 
-export default Dashboard2;
+export default Home;

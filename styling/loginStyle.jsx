@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   logoContainer: {
@@ -6,12 +6,11 @@ const styles = StyleSheet.create({
     marginTop: 60,
     flex: 1,
     flexDirection: 'column',
-
   },
   logo: {
     marginBottom: 20,
-       width: 130,
-    height: 210,
+    width: 200,
+    height: 220,
   },
   subtitle: {
     fontSize: 24,
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    marginTop:10,
+    marginTop: 10,
     padding: 10,
     marginBottom: 20,
   },
@@ -37,6 +36,8 @@ const styles = StyleSheet.create({
   inputField: {
     flex: 1,
     fontSize: 16,
+    color: '#666',
+    placeholderTextColor: '#000',
   },
   visibilityIcon: {
     width: 20,
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loginButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#FF0000',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
