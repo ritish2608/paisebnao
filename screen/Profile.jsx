@@ -1,152 +1,187 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import profileImage from '../assets/images/userimg.png'; // You need to add assets to your React Native project
-import editProfileIcon from '../assets/images/edit.png'; 
-import referIcon from '../assets/images/referr.png'; 
-import withdrawIcon from '../assets/images/withdraw.png'; 
-import helpIcon from '../assets/images/help.png'; 
-import logoutIcon from '../assets/images/logout.png'; 
-import { fetchUserdetail } from './api';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Button,
+  Alert,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+
+//import ToastMsg from '../common/ToastMsg';
+import profileImage from '../assets/images/userimg.png';
+import editProfileIcon from '../assets/images/edit.png';
+import policiesIcon from '../assets/images/policies.png';
+import referIcon from '../assets/images/referr.png';
+import withdrawIcon from '../assets/images/withdraw.png';
+import helpIcon from '../assets/images/help.png';
+import logoutIcon from '../assets/images/logout.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {fetchUserDetail} from './api';
 
 const Profile = () => {
-    const [name, setName] = useState('User');
-    const [email, setEmail] = useState('abdf@gmail.com');
-    const [phone, setPhone] = useState('1234567890');
-    const [referral, setReferral] = useState(null);
-    const [referralCount, setReferralCount] = useState(0);
+  const [name, setName] = useState('User');
+  const [email, setEmail] = useState('example@gmail.com');
+  const [phone, setPhone] = useState('1234567890');
+  const [referral, setReferral] = useState(null);
+  const [referralCount, setReferralCount] = useState(0);
+  const [points, setPoints] = useState(0);
 
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    useEffect(() => {
-        handleFetchUserDetail();
-    }, []);
+  useEffect(() => {
+    handleFetchUserDetail();
+  }, []);
 
-    const handleFetchUserDetail = async () => {
-        try {
-            const data = await fetchUserdetail();
-            console.log(data, "user API response");
-            setName(data?.data?.first_name + " " + data?.data?.last_name);
-            setEmail(data?.data?.email);
-            setPhone(data?.data?.phone_number);
-            setReferral(data?.data?.referral_id);
-            setReferralCount(data?.data?.referral_count || 0);
-        } catch (error) {
-            console.error('Error fetching partner data:', error);
-        }
-    };
+  const handleFetchUserDetail = async () => {
+    try {
+      const data = await fetchUserDetail();
+      console.log(data, 'user API response');
 
-    const handleReferAndEarn = () => {
-        if (referral) {
-            navigation.navigate('ReferReferandEarnAndEarn', { referralId: referral, referralCount });
-        } else {
-            navigation.navigate('ReferAndEarn');
-        }
-    };
+      setName(data?.data?.first_name);
+      setEmail(data?.data?.email);
+      setPhone(data?.data?.phone_number);
+      setPoints(data?.data?.points);
+      setReferral(data?.data?.referral_id);
+      setReferralCount(data?.data?.referral_count ?? 0);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      // ToastMsg.error('Error fetching user details. Please try again.');
+    }
+  };
 
-    const handleLogout = () => {
-        // Clear local storage (AsyncStorage in React Native)
-        AsyncStorage.clear();
-        navigation.navigate('Login');
-    };
+  const handleLogout = () => {
+    // Clear local storage and navigate to home
+    AsyncStorage.clear(); // Adapt this as needed for React Native
+    navigation.navigate('Landing'); // Update to your main screen
+  };
 
-    const goBack = () => {
-        navigation.goBack();
-    };
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image source={profileImage} style={styles.profileImage} />
+      <Text style={styles.profileName}>{name}</Text>
+      <Text style={styles.profileEmail}>{email}</Text>
+      <Text style={styles.profilePhone}>+91 {phone}</Text>
+      <Text style={styles.profileInfo}>Your referral ID is: {referral}</Text>
+      <Text style={styles.profileInfo}>
+        Your referral count is: {referralCount}
+      </Text>
 
-    return (
-        <View style={styles.container}>
-            <Image source={profileImage} style={styles.profileImage} />
-            <Text style={styles.profileName}>{name}</Text>
-            <Text style={styles.profileEmail}>{email}</Text>
-            <Text style={styles.profilePhone}>+91 {phone}</Text>
-            <Text style={styles.profilePhone}>Your refer ID is: {referral}</Text>
-            <Text style={styles.profilePhone}>Your refer count is: {referralCount}</Text>
+      <View style={styles.optionsContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('EditProfile')}
+          style={styles.option}>
+          <Image source={editProfileIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Edit Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddBankDetails')}
+          style={styles.option}>
+          <Image source={editProfileIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Add Bank Details</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Policies')}
+          style={styles.option}>
+          <Image source={policiesIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Policies</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('ReferAndEarn', {
+              referralId: referral,
+              referralCount,
+            })
+          }
+          style={styles.option}>
+          <Image source={referIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Refer And Earn</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('WithdrawAmount', {balance: points})
+          }
+          style={styles.option}>
+          <Image source={withdrawIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Withdraw Earnings</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('HelpCenterScreen')}
+          style={styles.option}>
+          <Image source={helpIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Help Center</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={styles.option}>
+          <Image source={logoutIcon} style={styles.optionIcon} />
+          <Text style={styles.optionText}>Log out</Text>
+        </TouchableOpacity>
+      </View>
 
-            <View style={styles.optionsContainer}>
-                <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('EditProfile')}>
-                    <Image source={editProfileIcon} style={styles.optionIcon} />
-                    <Text style={styles.optionText}>Edit Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.option} onPress={handleReferAndEarn}>
-                    <Image source={referIcon} style={styles.optionIcon} />
-                    <Text style={styles.optionText}>Refer And Earn</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
-                    <Image source={withdrawIcon} style={styles.optionIcon} />
-                    <Text style={styles.optionText}>Withdraw Earnings</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
-                    <Image source={helpIcon} style={styles.optionIcon} />
-                    <Text style={styles.optionText}>Help Center</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.option} onPress={handleLogout}>
-                    <Image source={logoutIcon} style={styles.optionIcon} />
-                    <Text style={styles.optionText}>Log out</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.buttonDiv}>
-                <Button title="Go Back" onPress={goBack} />
-            </View>
-        </View>
-    );
+      <View>
+        <Button
+          style={{backgroundColor: '#ff0000'}}
+          title="Go Back"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    profileImage: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        marginBottom: 20,
-    },
-    profileName: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    profileEmail: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 5,
-    },
-    profilePhone: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 5,
-    },
-    optionsContainer: {
-        marginTop: 20,
-        width: '100%',
-        alignItems: 'center',
-    },
-    option: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 10,
-        marginVertical: 10,
-        width: '80%',
-        backgroundColor: '#f9f9f9',
-        borderRadius: 10,
-    },
-    optionIcon: {
-        width: 30,
-        height: 30,
-        marginRight: 20,
-    },
-    optionText: {
-        fontSize: 16,
-    },
-    buttonDiv: {
-        marginTop: 20,
-    },
+  container: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  profileEmail: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  profilePhone: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  profileInfo: {
+    fontSize: 16,
+    marginVertical: 2,
+  },
+  optionsContainer: {
+    width: '100%',
+    marginVertical: 20,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  optionIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  optionText: {
+    fontSize: 16,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: '100%',
+    backgroundColor: '#ff0000',
+  },
 });
 
 export default Profile;

@@ -11,7 +11,6 @@ import 'react-native-gesture-handler';
 import Splash from './screen/Splash';
 import Register from './screen/Register';
 import Landing from './screen/Landing';
-import Dashboard from './screen/Dashboard';
 
 import Login from './screen/Login';
 import OopsScreen from './screen/OopsScreen';
@@ -27,43 +26,115 @@ import Registration from './screen/Registration';
 import VideoPlayer from './screen/VideoPlayer';
 import WithdrawAmount from './screen/WithdrawAmount';
 import Dashboard2 from './screen/dash_board';
+
+import AddBankDetails from './screen/AddBankDetails';
+import Policies from './screen/Policies';
+import WithdrawAmount1 from './screen/WithdrawAmount1';
+import HelpCenterScreen from './screen/HelpCenterScreen';
+import BankDetailsConfirmation from './screen/BankDetailsConfirmation';
+import EditProfileScreen from './screen/EditProfileScreen';
+
 import Home from './screen/Home';
+import VerifyOtpSignup from './screen/VerifyOtpSignup';
+import {GlobalProvider} from './screen/GlobalProvider';
+import RemoteDashboard from './screen/RemoteDashboard';
 
 const App = () => {
   // const Drawer = createDrawerNavigator();
   //const isDrawerOpen = useDrawerStatus() === 'open';
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen
-          name="Splash"
-          component={Splash}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen
-          name="Landing"
-          component={Landing}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="OopsScreen" component={OopsScreen} />
-        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-        <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} />
-        <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
-        <Stack.Screen name="RootNavigator" component={RootNavigator} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="ReferAndEarn" component={ReferAndEarn} />
-        <Stack.Screen name="PlatformFees" component={PlatformFees} />
-        <Stack.Screen name="Dashboard2" component={Dashboard2} />
-        <Stack.Screen name="Registration" component={Registration} />
-        <Stack.Screen name="VideoPlayer" component={VideoPlayer} />
-        <Stack.Screen name="WithdrawAmount" component={WithdrawAmount} />
+    <GlobalProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Splash">
+          <Stack.Screen
+            name="Splash"
+            component={Splash}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen
+            name="Landing"
+            component={Landing}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Policies" component={Policies} />
+          <Stack.Screen name="AddBankDetails" component={AddBankDetails} />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{title: 'Login'}}
+          />
+          <Stack.Screen name="OopsScreen" component={OopsScreen} />
+          <Stack.Screen
+            name="ForgetPassword"
+            component={ForgetPassword}
+            options={{title: 'Forget Password'}}
+          />
+          <Stack.Screen
+            name="CreateNewPassword"
+            component={CreateNewPassword}
+          />
+          <Stack.Screen
+            name="VerifyAccount"
+            component={VerifyAccount}
+            options={{title: 'Verify Account'}}
+          />
+          <Stack.Screen name="RootNavigator" component={RootNavigator} />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{title: 'Profile'}}
+          />
+          <Stack.Screen
+            name="ReferAndEarn"
+            component={ReferAndEarn}
+            options={{title: 'Refer And Earn'}}
+          />
+          <Stack.Screen name="PlatformFees" component={PlatformFees} />
+          <Stack.Screen name="VerifyOtpSignup" component={VerifyOtpSignup} />
+          <Stack.Screen
+            name="Dashboard2"
+            options={{headerShown: false}}
+            component={Dashboard2}
+          />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfileScreen}
+            options={{title: 'Edit Profile'}}
+          />
+          <Stack.Screen name="Registration" component={Registration} />
+          <Stack.Screen name="VideoPlayer" component={VideoPlayer} />
+          <Stack.Screen
+            name="WithdrawAmount"
+            component={WithdrawAmount}
+            options={{title: 'Withdraw Amount'}}
+          />
+          <Stack.Screen
+            name="WithdrawAmount1"
+            component={WithdrawAmount1}
+            options={{title: 'Withdraw Amount'}}
+          />
+          <Stack.Screen
+            name="HelpCenterScreen"
+            component={HelpCenterScreen}
+            options={{title: 'Help Center'}}
+          />
+          <Stack.Screen
+            name="BankDetailsConfirmation"
+            component={BankDetailsConfirmation}
+            options={{title: 'Bank Details Confirmation'}}
+          />
+          <Stack.Screen
+            name="RemoteDashboard"
+            options={{headerShown: false}}
+            component={RemoteDashboard}
+          />
 
-        {/* <Stack.Screen name="Home" component={Home} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+          {/* <Stack.Screen name="Home" component={Home} /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GlobalProvider>
   );
 };
 export default App;

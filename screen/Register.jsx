@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { registerUser } from './api'; // Your API file path
+import {useNavigation} from '@react-navigation/native';
+import {registerUser} from './api'; // Your API file path
 
 // Import images (Make sure you have them in your project)
 import fullnameicon from '../assets/images/fullname.png';
@@ -22,7 +22,6 @@ import eyeon from '../assets/images/eye-on.png';
 import eyeoff from '../assets/images/eye-off.png';
 import safeimg from '../assets/images/safe.png';
 import {AsyncStorage} from 'react-native';
-
 
 const RegisterScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -49,11 +48,13 @@ const RegisterScreen = () => {
     try {
       const response = await registerUser(userData);
       if (response?.access_token) {
-          AsyncStorage.setItem('access_token', response?.access_token);
+        AsyncStorage.setItem('access_token', response?.access_token);
         Alert.alert('Success', 'Registration successful!');
         navigation.navigate('Login'); // Navigate to dashboard
       } else {
-        setMessage('Please try with different user details, user already exists.');
+        setMessage(
+          'Please try with different user details, user already exists.',
+        );
       }
     } catch (error) {
       Alert.alert(error);
@@ -62,13 +63,13 @@ const RegisterScreen = () => {
     }
   };
 
-  const handleEmailChange = (value) => {
+  const handleEmailChange = value => {
     setEmail(value);
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setValidateEmail(emailRegex.test(value));
   };
 
-  const handlePhoneNoChange = (value) => {
+  const handlePhoneNoChange = value => {
     const cleanedValue = value.replace(/\D/g, '');
     if (cleanedValue && !/^[6-9]/.test(cleanedValue)) {
       setIsValid(false);
@@ -112,7 +113,9 @@ const RegisterScreen = () => {
           maxLength={10}
           keyboardType="numeric"
         />
-        {!isValid && <Text style={styles.errorMessage}>Invalid phone number</Text>}
+        {!isValid && (
+          <Text style={styles.errorMessage}>Invalid phone number</Text>
+        )}
       </View>
 
       <View style={styles.inputWrapper}>
@@ -124,7 +127,9 @@ const RegisterScreen = () => {
           onChangeText={handleEmailChange}
           keyboardType="email-address"
         />
-        {!validateEmail && <Text style={styles.errorMessage}>Invalid email address</Text>}
+        {!validateEmail && (
+          <Text style={styles.errorMessage}>Invalid email address</Text>
+        )}
       </View>
 
       <View style={styles.inputWrapper}>
@@ -138,7 +143,10 @@ const RegisterScreen = () => {
           maxLength={4}
         />
         <TouchableOpacity onPress={togglePasswordVisibility}>
-          <Image source={passwordVisible ? eyeon : eyeoff} style={styles.visibilityIcon} />
+          <Image
+            source={passwordVisible ? eyeon : eyeoff}
+            style={styles.visibilityIcon}
+          />
         </TouchableOpacity>
       </View>
 
@@ -160,11 +168,15 @@ const RegisterScreen = () => {
 
       <Text style={styles.text}>
         By continuing, you agree to our{' '}
-        <Text style={styles.link} onPress={() =>  navigation.navigate('OopsScreen')}>
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate('OopsScreen')}>
           Terms & Conditions
         </Text>{' '}
         and{' '}
-        <Text style={styles.link} onPress={() => navigation.navigate('PrivacyPolicy')}>
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate('PrivacyPolicy')}>
           Privacy Policy
         </Text>
       </Text>
