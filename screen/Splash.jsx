@@ -31,9 +31,13 @@ const Splash = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.text} source={paisebnaologo} />
+      <Image
+        source={require('../assets/images/paisebnaologo.png')}
+        style={styles.text}
+      />
+      {/* <Image style={styles.text} source={paisebnaologo} /> */}
       {/* <Image tyle={styles.text} source={paisebnaologo} /> */}
-      <Image source={group_1} style={{marginTop: 20}} />
+      {/* <Image source={group_1} style={{marginTop: 20}} /> */}
     </View>
   );
 };

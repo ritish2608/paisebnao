@@ -132,10 +132,10 @@ const styles = StyleSheet.create({
   button: {
     display: 'flex',
     width: '100%',
-    maxWidth: 300,
+    maxWidth: 400,
     margin: '0 auto',
     padding: 10,
-    backgroundColor: '#007bff',
+    backgroundColor: '#dc3545',
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',

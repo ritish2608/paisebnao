@@ -22,7 +22,7 @@ import './Router/Routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {loginUser} from './api';
-import {useGlobalContext} from './GlobalProvider';
+//import {useGlobalContext} from './GlobalProvider';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -32,8 +32,8 @@ const Login = () => {
   const [loginError, setLoginError] = useState('');
   const navigation = useNavigation();
 
-  const {saveData} = useGlobalContext();
-  const {saveToken} = useGlobalContext();
+  // const {saveData} = useGlobalContext();
+  // const {saveToken} = useGlobalContext();
   const validateEmail = email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -67,8 +67,8 @@ const Login = () => {
       const response = await loginUser(email, password);
 
       console.log('Access token response :: ', response);
-      saveData(response?.access_token);
-      saveToken(response?.access_token);
+      // saveData(response?.access_token);
+      // saveToken(response?.access_token);
       AsyncStorage.setItem('access_token', response?.access_token);
 
       setTimeout(async () => {

@@ -50,7 +50,7 @@ const Dashboard2 = () => {
   const [referralId, setReferralId] = useState(null);
   const [referralCount, setReferralCount] = useState(0);
   const [name, setName] = useState('User');
-  const webViewRef = useRef(null);
+
   const navigation = useNavigation();
   const handleClose = () => setIsVisible(false);
   const [videoDuration, setVideoDuration] = useState(0);

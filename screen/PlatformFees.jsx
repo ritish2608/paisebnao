@@ -391,8 +391,7 @@ const PlatformFees = () => {
   const handlePaymentClick = () => {
     setIsPaymentProcessing(true);
     const depositAmount = 499;
-    const token = 'access_token_placeholder'; // Replace with your actual token logic
-
+    const token = 'access_token_placeholder';
     createOrderApiFunction(depositAmount, token);
   };
 
@@ -404,10 +403,12 @@ const PlatformFees = () => {
           To proceed with the withdrawal of your funds, you arex required to pay
           a one-time platform fee of
           {'\n\n'}
-          <Text onPress={handlePaymentClick} style={styles.submitText}>
-            ₹499/-
-          </Text>
-          .
+          {/* <View style={styles.title}>
+            <Text onPress={handlePaymentClick}>₹499/-</Text>
+          </View> */}
+          <View style={styles.container1}>
+            <Text style={styles.platformAmount}> ₹499/-</Text>
+          </View>
         </Text>
         <Text style={styles.instructions}>
           Once you have paid the fee, you will be able to withdraw your
@@ -443,9 +444,26 @@ const PlatformFees = () => {
 };
 
 const styles = StyleSheet.create({
+  container1: {
+    padding: 10,
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     padding: 30,
+    backgroundColor: '#fff',
+  },
+  containerbox: {
+    borderWidth: 2,
+    textAlign: 'center',
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
+    fontSize: 22,
+    padding: 3,
+    borderColor: '#ddd',
+    borderRadius: 4,
     backgroundColor: '#fff',
   },
   submitText: {
@@ -464,18 +482,36 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'center',
   },
+
+  platformAmount: {
+    alignContent: 'center',
+    fontSize: 20,
+    padding: 20,
+    alignItems: 'center',
+    fontWeight: '500', // Use '800' for bold text
+    color: 'red',
+    borderColor: 'black', // Equivalent to 'outline'
+    borderWidth: 1, // Border width
+    borderRadius: 5,
+    paddingVertical: 10, // Padding top and bottom
+    paddingHorizontal: 20, // Padding left and right
+  },
   title: {
     fontSize: 20,
+
     fontWeight: 'bold',
     marginTop: 20,
     textAlign: 'center',
-    color: 'black',
+    color: 'red',
   },
   instructionsContainer: {
     marginTop: 20,
+    flex: 1,
     alignContent: 'center',
+    marginBottom: 10,
   },
   instructions: {
+    fontWeight: 'bold',
     fontSize: 16,
     color: '#000',
   },
@@ -510,7 +546,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   paymentButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#dc3545',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',

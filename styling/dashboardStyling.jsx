@@ -12,7 +12,7 @@ const dashboardStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 10,
+    padding: 2,
     backgroundColor: '#fff',
   },
   container1: {
@@ -265,8 +265,10 @@ const dashboardStyles = StyleSheet.create({
     height: 30,
     marginRight: 10,
   },
+
   pointsDisplayWrapper: {
     justifyContent: 'center',
+    color: '#fff',
   },
   textSkeletonLoader: {
     width: 100,
@@ -314,7 +316,6 @@ const dashboardStyles = StyleSheet.create({
     marginTop: 10,
   },
   videoSection: {
-    marginTop: 100,
     width: '100%',
     alignItems: 'center',
   },
@@ -351,7 +352,6 @@ const dashboardStyles = StyleSheet.create({
   progressBarContainer: {
     width: '100%',
     alignItems: 'center',
-    marginVertical: 10,
   },
   progressBar: {
     width: '100%',

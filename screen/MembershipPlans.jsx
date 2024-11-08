@@ -381,6 +381,7 @@ const MembershipPlans = () => {
         <View style={styles.plan}>
           <Text style={styles.planTitle}>Membership Plans for You</Text>
           {<GradientBackground />}
+          <View style={styles.gradient} />
 
           {plans.map((plan, index) => (
             <View key={index}>
@@ -461,8 +462,11 @@ const styles = StyleSheet.create({
     elevation: 2, // Android equivalent of box-shadow
   },
   gradient: {
-    padding: 10,
-    flex: 1, // Adjust the size as needed
+    backgroundColor: '#dc3545',
+    padding: 1,
+    width: '50%',
+    marginBottom: '20',
+    // Adjust the size as needed
   },
   title: {
     fontSize: 18,
@@ -494,6 +498,7 @@ const styles = StyleSheet.create({
     color: '#000',
     alignContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
   },
   planTitle: {
     fontSize: 18,

@@ -243,30 +243,30 @@ const WithdrawAmount = () => {
 
   const handleSubmit = e => {
     console.log('pointsEarned :::', pointsEarned);
-    if (pointsEarned < 5000) {
-      setWithdrawalPopupVisible(true);
-    } else {
-      setIsValid(true);
+    // if (pointsEarned < 5000) {
+    // setWithdrawalPopupVisible(true);
+    // } else {
+    setIsValid(true);
 
-      const refrcount = parseInt(AsyncStorage.getItem('refercount'), 10);
-      console.log('handel refrcount ::::', refrcount);
-      console.log('handel platformFeePaid ::::', platformFeePaid);
-      console.log('handel noMistake ::::', noMistake);
-      if (!platformFeePaid) {
-        navigation.navigate('PlatformFees', {amount});
-      } else if (refrcount < 3) {
-        navigation.navigate('ReferAndEarn', {keyfrom: 'withdrawal'});
-      } else if (noMistake) {
-        navigation.navigate('YourMistake');
-      } else {
-        console.log('handel handleWithdrawalRequest ::::', initialBalance);
-        handleWithdrawalRequest(upiId, initialBalance);
-      }
-      // navigation.navigate('WithdrawAmount');
-      // navigate(
-      //   `/amount-withdraw?balance=${pointsEarned}&&refercount=${referralCount}`,
-      // );
+    const refrcount = parseInt(AsyncStorage.getItem('refercount'), 10);
+    console.log('handel refrcount ::::', refrcount);
+    console.log('handel platformFeePaid ::::', platformFeePaid);
+    console.log('handel noMistake ::::', noMistake);
+    if (!platformFeePaid) {
+      navigation.navigate('PlatformFees', {amount});
+    } else if (refrcount < 3) {
+      navigation.navigate('ReferAndEarn', {keyfrom: 'withdrawal'});
+    } else if (noMistake) {
+      navigation.navigate('YourMistake');
+    } else {
+      console.log('handel handleWithdrawalRequest ::::', initialBalance);
+      handleWithdrawalRequest(upiId, initialBalance);
     }
+    // navigation.navigate('WithdrawAmount');
+    // navigate(
+    //   `/amount-withdraw?balance=${pointsEarned}&&refercount=${referralCount}`,
+    // );
+    //  }
     // e.preventDefault();
     // console.log('handel submit ::::', upiId.trim());
     // if (upiId.trim() === '' || !validateUpiId(upiId)) {
@@ -328,18 +328,36 @@ const WithdrawAmount = () => {
             </View>
           </Modal>
 
-          <Text style={styles.withdrawAmountBox}>{formatCurrency(amount)}</Text>
-          <Slider
+          <Text style={styles.containerbox}>{formatCurrency(amount)}</Text>
+          {/* <Slider
             minimumValue={0}
             maximumValue={balance}
             value={amount}
             onValueChange={setAmount}
             style={styles.slider}
+          /> */}
+
+          <Slider
+            style={styles.slider}
+            minimumValue={0}
+            maximumValue={balance}
+            value={amount}
+            onValueChange={setAmount}
+            thumbTintColor="#3498db" // Custom thumb color
+            minimumTrackTintColor="#3498db" // Custom track color
+            maximumTrackTintColor="#d3d3d3" // Custom inactive track color
+            step={1} // Ensure only whole values are selected
           />
+
           <View style={styles.sliderLabels}>
+            <Text style={styles.sliderLabel}>₹0</Text>
+            <Text style={styles.sliderLabel}>{formatCurrency(balance)}</Text>
+          </View>
+
+          {/* <View style={styles.sliderLabels}>
             <Text>₹0</Text>
             <Text>{formatCurrency(balance)}</Text>
-          </View>
+          </View> */}
         </View>
         <View style={styles.upiSection}>
           <Text style={styles.upiTitle}>Enter your UPI ID</Text>
@@ -356,17 +374,33 @@ const WithdrawAmount = () => {
           <Text style={styles.upiInstruction}>
             Enter Your UPI ID to Receive Amount
           </Text>
+          <Text style={styles.safetyNote}>100% Safe & Secure</Text>
         </View>
         <TouchableOpacity onPress={handleSubmit} style={styles.button}>
           <Text style={styles.buttonText}>Withdraw Amount</Text>
         </TouchableOpacity>
-        <Text style={styles.safetyNote}>100% Safe & Secure</Text>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  withdrawSection: {
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  containerbox: {
+    borderWidth: 1,
+    fontWeight: 'bold',
+    fontSize: 22,
+    color: 'black',
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    textAlign: 'center',
+    marginVertical: 10,
+    backgroundColor: '#f8f9fa',
+  },
   popupContainer: {
     width: '90%',
     backgroundColor: '#fff',
@@ -403,23 +437,24 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   // },
   balanceTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
+    color: 'black',
   },
   balanceAmount: {
     color: 'green',
-    fontSize: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
   },
-  withdrawSection: {
-    marginBottom: 24,
-  },
+
   withdrawInstruction: {
     fontSize: 16,
-    textAlign: 'center',
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   withdrawAmountBox: {
     fontSize: 18,
@@ -428,19 +463,30 @@ const styles = StyleSheet.create({
   },
   slider: {
     width: '100%',
-    height: 40,
+    marginTop: 20,
+    fontWeight: 'bold',
+    height: 10, // Makes the slider thinner by reducing height
+    marginBottom: 20,
   },
   sliderLabels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 8,
+  },
+  sliderLabel: {
+    marginStart: 20,
+    fontSize: 16,
+    color: '#555',
   },
   upiSection: {
     marginBottom: 24,
+    marginStart: 20,
+    marginEnd: 20,
   },
   upiTitle: {
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 8,
+    fontWeight: 'bold',
+    color: 'black',
   },
   upiInput: {
     borderWidth: 1,
@@ -458,14 +504,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   upiInstruction: {
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 16,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#dc3545',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
+    marginTop: 40,
   },
   buttonText: {
     color: '#fff',
@@ -476,7 +523,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
     fontSize: 14,
-    color: 'gray',
+    color: 'green',
   },
 });
 

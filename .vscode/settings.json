@@ -11,5 +11,6 @@
     "referralicon",
     "tresery",
     "Userdetail"
-  ]
+  ],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

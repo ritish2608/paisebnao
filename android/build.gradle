@@ -19,6 +19,12 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 
+// configurations.all {
+//     resolutionStrategy {
+//         force 'com.android.volley:volley:1.2.0'  // Force resolution to newer version of volley
+//     }
+// }
+
 }
 
 apply plugin: "com.facebook.react.rootproject"
